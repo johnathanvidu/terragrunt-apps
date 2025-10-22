@@ -1,0 +1,12 @@
+.DS_Store
+
+# Terragrunt/Terraform generated files and directories
+.terragrunt-cache/
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Sensitive files (if applicable)
+*.tfvars.json # or other sensitive variable files
+secrets.tfvars
