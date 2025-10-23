@@ -9,8 +9,8 @@
 #   app_folder    - The name of the app folder to create under each environment (prod, stage).
 #
 # Environment Variables:
-#   ENVIRONMNETS_PATH - Path to the environments directory (must exist).
-#   TEMPLATE_PATH     - Path to the templates directory (must exist).
+#   ENVIRONMENTS_PATH - Path to the environments directory (must exist).
+#   TEMPLATES_PATH     - Path to the templates directory (must exist).
 #
 # Description:
 #   - Switches to the specified branch in the environments repo.
@@ -28,12 +28,12 @@ BRANCH_NAME="$1"
 ASSET_FOLDER="$2"
 APP_FOLDER="$3"
 
-if [ -z "$ENVIRONMNETS_PATH" ] || [ -z "$TEMPLATE_PATH" ]; then
-	echo "ENVIRONMNETS_PATH and TEMPLATE_PATH must be set as environment variables."
+if [ -z "$ENVIRONMENTS_PATH" ] || [ -z "$TEMPLATES_PATH" ]; then
+	echo "ENVIRONMENTS_PATH and TEMPLATES_PATH must be set as environment variables."
 	exit 1
 fi
 
-cd "$ENVIRONMNETS_PATH"
+cd "$ENVIRONMENTS_PATH"
 
 # Checkout the branch, create if it doesn't exist
 git fetch origin
@@ -44,34 +44,36 @@ else
 fi
 
 for ENV in prod stage; do
-	ENV_DIR="$ENVIRONMNETS_PATH/$ENV"
+    
+	ENV_DIR="$ENVIRONMENTS_PATH/$ENV"
 	APP_DIR="$ENV_DIR/$APP_FOLDER"
+    echo "$ENV_DIR and $APP_DIR"
 	mkdir -p "$APP_DIR"
-	cp -R "$TEMPLATE_PATH/$ASSET_FOLDER/." "$APP_DIR/"
+	cp -R "$TEMPLATES_PATH/$ASSET_FOLDER/." "$APP_DIR/"
 done
 
-git add .
-COMMIT_MSG="Add/update $ASSET_FOLDER to $APP_FOLDER in all environments [$(date)]"
+# git add .
+# COMMIT_MSG="Add/update $ASSET_FOLDER to $APP_FOLDER in all environments [$(date)]"
 
-# Retry loop for commit & push to handle race conditions
-MAX_RETRIES=5
-COUNT=0
-while [ $COUNT -lt $MAX_RETRIES ]; do
-	if git commit -m "$COMMIT_MSG"; then
-		if git push origin "$BRANCH_NAME"; then
-			echo "Changes pushed successfully."
-			exit 0
-		else
-			echo "Push failed, attempting to rebase and retry ($((COUNT+1))/$MAX_RETRIES)..."
-			git pull --rebase origin "$BRANCH_NAME"
-		fi
-	else
-		echo "Nothing to commit, exiting."
-		exit 0
-	fi
-	COUNT=$((COUNT+1))
-	sleep 2
-done
+# # Retry loop for commit & push to handle race conditions
+# MAX_RETRIES=5
+# COUNT=0
+# while [ $COUNT -lt $MAX_RETRIES ]; do
+# 	if git commit -m "$COMMIT_MSG"; then
+# 		if git push origin "$BRANCH_NAME"; then
+# 			echo "Changes pushed successfully."
+# 			exit 0
+# 		else
+# 			echo "Push failed, attempting to rebase and retry ($((COUNT+1))/$MAX_RETRIES)..."
+# 			git pull --rebase origin "$BRANCH_NAME"
+# 		fi
+# 	else
+# 		echo "Nothing to commit, exiting."
+# 		exit 0
+# 	fi
+# 	COUNT=$((COUNT+1))
+# 	sleep 2
+# done
 
-echo "Failed to push changes after $MAX_RETRIES attempts."
-exit 1
+# echo "Failed to push changes after $MAX_RETRIES attempts."
+# exit 1
