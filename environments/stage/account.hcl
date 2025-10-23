@@ -5,3 +5,4 @@ locals {
   aws_region     = "eu-west-1"
   account_name   = "stage"
   aws_account_id = "046086677675" # same as prod for testing purposes
+}
