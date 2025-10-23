@@ -40,7 +40,7 @@ ENV_FOLDERS=("environments/prod" "environments/stage")
 
 # Prepare terragrunt inputs block
 generate_terragrunt_inputs() {
-	echo "inputs = {"
+	echo "locals {"
 	for kv in "${INPUTS[@]}"; do
 		key="${kv%%=*}"
 		value="${kv#*=}"

@@ -36,7 +36,6 @@ remote_state {
     bucket         = "${get_env("TG_BUCKET_PREFIX", "")}terragrunt-example-tf-state-${local.account_name}-${local.aws_region}"
     key            = "${path_relative_to_include()}/tf.tfstate"
     region         = local.aws_region
-    dynamodb_table = "tf-locks"
   }
   generate = {
     path      = "backend.tf"
