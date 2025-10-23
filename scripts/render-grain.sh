@@ -45,35 +45,35 @@ fi
 
 for ENV in prod stage; do
     
-	ENV_DIR="$ENVIRONMENTS_PATH/$ENV"
+	ENV_DIR="$ENVIRONMENTS_PATH/environments/$ENV"
 	APP_DIR="$ENV_DIR/$APP_FOLDER"
-    echo "$ENV_DIR and $APP_DIR"
 	mkdir -p "$APP_DIR"
+    echo "copying folder $TEMPLATES_PATH/$ASSET_FOLDER/* to $APP_DIR/"
 	cp -R "$TEMPLATES_PATH/$ASSET_FOLDER/." "$APP_DIR/"
 done
 
-# git add .
-# COMMIT_MSG="Add/update $ASSET_FOLDER to $APP_FOLDER in all environments [$(date)]"
+git add .
+COMMIT_MSG="Add/update $ASSET_FOLDER to $APP_FOLDER in all environments [$(date)]"
 
-# # Retry loop for commit & push to handle race conditions
-# MAX_RETRIES=5
-# COUNT=0
-# while [ $COUNT -lt $MAX_RETRIES ]; do
-# 	if git commit -m "$COMMIT_MSG"; then
-# 		if git push origin "$BRANCH_NAME"; then
-# 			echo "Changes pushed successfully."
-# 			exit 0
-# 		else
-# 			echo "Push failed, attempting to rebase and retry ($((COUNT+1))/$MAX_RETRIES)..."
-# 			git pull --rebase origin "$BRANCH_NAME"
-# 		fi
-# 	else
-# 		echo "Nothing to commit, exiting."
-# 		exit 0
-# 	fi
-# 	COUNT=$((COUNT+1))
-# 	sleep 2
-# done
+# Retry loop for commit & push to handle race conditions
+MAX_RETRIES=5
+COUNT=0
+while [ $COUNT -lt $MAX_RETRIES ]; do
+	if git commit -m "$COMMIT_MSG"; then
+		if git push origin "$BRANCH_NAME"; then
+			echo "Changes pushed successfully."
+			exit 0
+		else
+			echo "Push failed, attempting to rebase and retry ($((COUNT+1))/$MAX_RETRIES)..."
+			git pull --rebase origin "$BRANCH_NAME"
+		fi
+	else
+		echo "Nothing to commit, exiting."
+		exit 0
+	fi
+	COUNT=$((COUNT+1))
+	sleep 2
+done
 
-# echo "Failed to push changes after $MAX_RETRIES attempts."
-# exit 1
+echo "Failed to push changes after $MAX_RETRIES attempts."
+exit 1
