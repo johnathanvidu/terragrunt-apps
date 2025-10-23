@@ -49,7 +49,7 @@ for ENV in prod stage; do
 	APP_DIR="$ENV_DIR/$APP_FOLDER"
 	mkdir -p "$APP_DIR"
     echo "copying folder $TEMPLATES_PATH/$ASSET_FOLDER/* to $APP_DIR/"
-	cp -R "$TEMPLATES_PATH/$ASSET_FOLDER/." "$APP_DIR/"
+	cp -R "$TEMPLATES_PATH/$ASSET_FOLDER" "$APP_DIR/"
 done
 
 git add .
