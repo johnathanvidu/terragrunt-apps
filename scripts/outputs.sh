@@ -1,1 +1,1 @@
-export COMMIT=vido
+export vido=vido
