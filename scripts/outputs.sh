@@ -1,1 +1,1 @@
-export COMMIT=vido
+export COMMIT=$(echo "vido2")
