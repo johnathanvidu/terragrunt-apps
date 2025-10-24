@@ -1,1 +1,2 @@
-export COMMIT=$(echo "vido2")
+cd $ENVIRONMENTS_PATH/scripts
+export COMMIT=$(echo "vido3")
