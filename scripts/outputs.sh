@@ -1,1 +1,1 @@
-export COMMIT=$(cd $ENVIRONMENTS_PATH/scripts && git rev-parse HEAD)
+export commit=$(cd $ENVIRONMENTS_PATH/scripts && git rev-parse HEAD)
