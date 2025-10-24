@@ -1,1 +1,1 @@
-export COMMIT=$(echo "vido3")
+export COMMIT=$(cd $ENVIRONMENTS_PATH/scripts && git rev-parse HEAD)
