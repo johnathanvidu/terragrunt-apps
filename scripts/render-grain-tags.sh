@@ -1,12 +1,13 @@
 
 #!/bin/bash
 
-# Usage: ./render-grain.sh <branch_name> <asset_folder> <app_folder>
+# Usage: ./render-grain.sh <branch_name> <asset_folder> <app_folder> <tag_name>
 #
 # Arguments:
 #   branch_name   - The git branch to switch to in the environments repo.
 #   asset_folder  - The name of the asset folder inside the template path to copy.
 #   app_folder    - The name of the app folder to create under each environment (prod, stage).
+#   tag_name      - The name of the tag to create for the commit.
 #
 # Environment Variables:
 #   ENVIRONMENTS_PATH - Path to the environments directory (must exist).
@@ -19,15 +20,15 @@
 
 set -e
 
-if [ "$#" -ne 3 ]; then
-	echo "Usage: $0 <branch_name> <asset_folder> <app_folder>"
+if [ "$#" -ne 4 ]; then
+	echo "Usage: $0 <branch_name> <asset_folder> <app_folder> <tag_name>"
 	exit 1
 fi
 
 BRANCH_NAME="$1"
 ASSET_FOLDER="$2"
 APP_FOLDER="$3"
-BLUEPRINT_NAME="$4"
+TAG_NAME="$4"
 
 if [ -z "$ENVIRONMENTS_PATH" ] || [ -z "$TEMPLATES_PATH" ]; then
 	echo "ENVIRONMENTS_PATH and TEMPLATES_PATH must be set as environment variables."
@@ -61,14 +62,14 @@ MAX_RETRIES=5
 COUNT=0
 if git commit -m "$COMMIT_MSG"; then
 	while [ $COUNT -lt $MAX_RETRIES ]; do
-		    git tag -a $BLUEPRINT_NAME $(git rev-parse HEAD) -m "Tagging commit for $BLUEPRINT_NAME"
+		    git tag -a $TAG_NAME $(git rev-parse HEAD) -m "Tagging commit for $TAG_NAME"
 			if git push origin --follow-tags "$BRANCH_NAME"; then # can use git push --atomic origin <branch name> <tag> instead if using git with https
 				echo "Changes pushed successfully."
 				exit 0
 			else
 				sleep 2
 				echo "Push failed, attempting to rebase and retry ($((COUNT+1))/$MAX_RETRIES)..."
-				git tag -d $BLUEPRINT_NAME
+				git tag -d $TAG_NAME
 				git pull --rebase origin "$BRANCH_NAME"
 			fi
 
