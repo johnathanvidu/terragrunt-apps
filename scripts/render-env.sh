@@ -203,15 +203,12 @@ write_final_yaml() {
 commit_and_push() {
   cd "$REPO_ROOT"
   CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-  echo "Current branch is $CURRENT_BRANCH"
   if git show-ref --verify --quiet "refs/heads/$DEV_BRANCH"; then
     git checkout "$DEV_BRANCH"
   else
     if git ls-remote --exit-code origin "$DEV_BRANCH" >/dev/null 2>&1; then
-      echo "checkouted"
       git checkout -b "$DEV_BRANCH" "origin/$DEV_BRANCH"
     else
-      echo "checkouted2"
       git checkout -b "$DEV_BRANCH"
     fi
   fi
