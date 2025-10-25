@@ -19,7 +19,7 @@ usage() {
     'Dependencies: curl, yq (v4), git, bash. gh (GitHub CLI) is optional for PR creation.' \
     '' \
     'Example:' \
-    '  bash env.yaml demo-space 123456 dev/my-feature --output environments/demo/env.yaml'
+    '  bash render-env.sh demo-space 123456 dev/my-feature --output environments/demo/env.yaml'
 }
 
 require_binary() {
@@ -82,7 +82,7 @@ setup_paths() {
   WORK_YAML="$WORKDIR/working.yaml"
   FINAL_YAML="$WORKDIR/final.yaml"
   if [[ -z "$OUTPUT_PATH" ]]; then
-    OUTPUT_PATH="$REPO_ROOT/env.yaml"
+    OUTPUT_PATH="$REPO_ROOT/blueprints/env.yaml"
   elif [[ "$OUTPUT_PATH" != /* ]]; then
     OUTPUT_PATH="$REPO_ROOT/$OUTPUT_PATH"
   fi
@@ -224,7 +224,7 @@ commit_and_push() {
   if git diff --cached --quiet; then
     echo "No changes detected in $RELATIVE_OUTPUT; skipping commit and push."
   else
-    COMMIT_MSG="Update env.yaml for ${SPACE}/${ENVID}"
+    COMMIT_MSG="Update blueprint for ${SPACE}/${ENVID}"
     git commit -m "$COMMIT_MSG"
     if git push --set-upstream origin "$DEV_BRANCH"; then
       echo "Pushed changes to $DEV_BRANCH"
@@ -240,7 +240,7 @@ commit_and_push() {
         '- Cleaned outputs and dependencies' \
         '- Added empty tags input per blueprint grain'
       )
-      PR_TITLE="Update env.yaml for ${SPACE}/${ENVID}"
+      PR_TITLE="Update blueprint for ${SPACE}/${ENVID}"
       if ! gh pr create --title "$PR_TITLE" --body "$PR_BODY" --base main --head "$DEV_BRANCH"; then
         echo "PR creation skipped or failed." >&2
       fi
