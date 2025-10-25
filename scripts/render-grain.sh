@@ -58,22 +58,23 @@ COMMIT_MSG="Add/update $ASSET_FOLDER to $APP_FOLDER in all environments [$(date)
 # Retry loop for commit & push to handle race conditions
 MAX_RETRIES=5
 COUNT=0
-while [ $COUNT -lt $MAX_RETRIES ]; do
-	if git commit -m "$COMMIT_MSG"; then
-		if git push origin "$BRANCH_NAME"; then
-			echo "Changes pushed successfully."
-			exit 0
-		else
-			echo "Push failed, attempting to rebase and retry ($((COUNT+1))/$MAX_RETRIES)..."
-			git pull --rebase origin "$BRANCH_NAME"
-		fi
-	else
-		echo "Nothing to commit, exiting."
-		exit 0
-	fi
-	COUNT=$((COUNT+1))
-	sleep 2
-done
+if git commit -m "$COMMIT_MSG"; then
+	while [ $COUNT -lt $MAX_RETRIES ]; do
+			if git push origin "$BRANCH_NAME"; then
+				echo "Changes pushed successfully."
+				exit 0
+			else
+				sleep 2
+				echo "Push failed, attempting to rebase and retry ($((COUNT+1))/$MAX_RETRIES)..."
+				git pull --rebase origin "$BRANCH_NAME"
+			fi
+
+		COUNT=$((COUNT+1))
+	done
+else
+	echo "Nothing to commit, exiting."
+	exit 0
+fi
 
 echo "Failed to push changes after $MAX_RETRIES attempts."
 exit 1
