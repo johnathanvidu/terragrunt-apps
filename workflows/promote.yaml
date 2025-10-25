@@ -2,12 +2,10 @@ spec_version: 2
 
 workflow:
   scope: env
+  labels-selector: promotable
   triggers:
     - type: manual
 
-
-inputs:
- 
 grains:
   render-env:
     kind: shell
