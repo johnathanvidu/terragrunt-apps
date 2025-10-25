@@ -31,6 +31,7 @@ grains:
             - 'wget "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" -O /usr/local/bin/yq || { echo "Failed to download yq"; exit 1; }'
             - 'chmod +x /usr/local/bin/yq'
             - 'echo "depdendencies installed"'
+            - 'export QTORQUE_API_TOKEN={{ .params.TORQUE_TOKEN}}'
             - 'git config --global user.email "johnathan.v@quali.com"'
             - 'git config --global user.name "johnathanvidu"'
             - '(cd $ENVIRONMENTS_PATH/scripts ; chmod +x ./render-env.sh ; ./render-env.sh {{ spaceName }} {{ .bindings.environment_id }} {{ .bindings.inputs.app_name }}-dev --output blueprints/{{ .bindings.inputs.app_name }}.yaml )'
